@@ -1,4 +1,3 @@
-```tsx
 import { useEffect, useState } from "react";
 import { Sidebar, type Page } from "./components/Sidebar";
 import { TopBar } from "./components/TopBar";
@@ -9,50 +8,53 @@ import { Portfolio } from "./pages/Portfolio";
 import { DecisionJournal } from "./pages/DecisionJournal";
 
 export default function App() {
-  const [page, setPage] = useState<Page>("command");
+const [page, setPage] = useState<Page>("command");
 
-  const {
-    portfolio,
-    journal,
-    loading,
-    error,
-    refresh,
-  } = useTradingStore();
+const {
+portfolio,
+journal,
+loading,
+error,
+refresh,
+} = useTradingStore();
 
-  useEffect(() => {
-    void refresh();
-  }, [refresh]);
+useEffect(() => {
+void refresh();
+}, [refresh]);
 
-  return (
-    <div className="app-shell">
-      <Sidebar page={page} setPage={setPage} />
+return ( <div className="app-shell"> <Sidebar page={page} setPage={setPage} />
 
-      <main className="main">
-        <TopBar loading={loading} onRefresh={refresh} />
+  <main className="main">
+    <TopBar loading={loading} onRefresh={refresh} />
 
-        {error && <div className="global-error">{error}</div>}
+    {error && (
+      <div className="global-error">
+        {error}
+      </div>
+    )}
 
-        {page === "command" && (
-          <CommandCenter
-            account={portfolio?.account ?? null}
-            journal={journal}
-          />
-        )}
+    {page === "command" && (
+      <CommandCenter
+        account={portfolio?.account ?? null}
+        journal={journal}
+      />
+    )}
 
-        {page === "analysis" && <TradeAnalysis />}
+    {page === "analysis" && <TradeAnalysis />}
 
-        {page === "portfolio" && (
-          <Portfolio
-            account={portfolio?.account ?? null}
-            positions={portfolio?.positions ?? []}
-          />
-        )}
+    {page === "portfolio" && (
+      <Portfolio
+        account={portfolio?.account ?? null}
+        positions={portfolio?.positions ?? []}
+      />
+    )}
 
-        {page === "journal" && (
-          <DecisionJournal journal={journal} />
-        )}
-      </main>
-    </div>
-  );
+    {page === "journal" && (
+      <DecisionJournal journal={journal} />
+    )}
+  </main>
+</div>
+
+
+);
 }
-```
