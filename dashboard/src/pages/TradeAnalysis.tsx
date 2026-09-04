@@ -10,24 +10,31 @@ export function TradeAnalysis() {
   const [error, setError] = useState("");
 
   async function load() {
-    if (!id.trim()) {
-      setError("Enter a Run ID");
+    const runId = id.trim();
+
+    if (!runId) {
       setData(null);
+      setError("Enter a Run ID");
       return;
     }
 
     try {
       setError("");
-      const result = await tradingApi.analysis(id.trim());
 
-      setData(
-        result && typeof result === "object"
-          ? (result as AnalysisData)
-          : { result }
-      );
-    } catch (e) {
+      const result = await tradingApi.analysis(runId);
+
+      if (result !== null && typeof result === "object") {
+        setData(result as AnalysisData);
+      } else {
+        setData({ result });
+      }
+    } catch (e: unknown) {
       setData(null);
-      setError(e instanceof Error ? e.message : "Run not found");
+      setError(
+        e instanceof Error
+          ? e.message
+          : "Run not found"
+      );
     }
   }
 
@@ -44,17 +51,31 @@ export function TradeAnalysis() {
         <div className="search">
           <input
             value={id}
-            onChange={(e) => setId(e.target.value)}
+            onChange={(event) => setId(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                void load();
+              }
+            }}
             placeholder="Run ID"
             aria-label="Run ID"
           />
 
-          <button type="button" onClick={load}>
+          <button
+            type="button"
+            onClick={() => {
+              void load();
+            }}
+          >
             Load
           </button>
         </div>
 
-        {error && <div className="error">{error}</div>}
+        {error && (
+          <div className="error">
+            {error}
+          </div>
+        )}
 
         {data !== null && (
           <pre className="json">
